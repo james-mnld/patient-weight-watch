@@ -1,0 +1,28 @@
+<form method="get">
+<button name="homeBtn" formaction="/home" type="submit">Home</button>
+<button name="imageBtn" formaction="/image" type="submit">Image</button>
+<button name="plotBtn" formaction="/plot" type="submit">Plot</button>
+
+ </form>
+ <table style="width:40%" border="1">
+    <caption>{{title}}</caption>
+  <tr> 
+  <form method="POST">
+   <th>Patient ID <input name="p_id"> </th>
+    <th>Name<input name="p_name"></th>
+    <th>Age <input name="p_age"></th>
+    <th>Weight <input name="p_weight"></th>
+    <th>Treatment<input name="p_treatment"></th>
+    <td>
+    <input type="submit">
+</td>
+</form>
+</tr>
+  {% for row in rows %}
+ <tr> 
+    {% for element in row %}
+    <td>{{ element }}</td>
+    {% endfor %}
+</tr>
+    {% endfor %}
+</table>
