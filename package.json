@@ -1,0 +1,19 @@
+{
+  "name": "patient-weight-watch",
+  "version": "1.0.0",
+  "description": "Project for MPDH 612 (W-2020)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/james-mnld/patient-weight-watch.git"
+  },
+  "author": "James Manalad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/james-mnld/patient-weight-watch/issues"
+  },
+  "homepage": "https://github.com/james-mnld/patient-weight-watch#readme"
+}
