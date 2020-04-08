@@ -1,0 +1,103 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    setInterval("ajaxd()",10000); // call every 10 seconds
+});
+
+function updateTable(tableId, jsonData){
+  var tableHTML = "<tr>";
+  for (var headers in jsonData[0]) {
+    tableHTML += "<th>" + headers + "</th>";
+  }
+  tableHTML += "</tr>";
+
+  for (var eachItem in jsonData) {
+    tableHTML += "<tr>";
+    var dataObj = jsonData[eachItem];
+    for (var eachValue in dataObj){
+      tableHTML += "<td>" + dataObj[eachValue] + "</td>";
+    }
+    tableHTML += "</tr>";
+  }
+  document.getElementById(tableId).innerHTML = tableHTML;
+}
+
+function ajaxd() {
+  //reload result into element with id "lastUpdate"
+  // $("#lastUpdate").load("/update_dash")
+  $.getJSON("/update_dash", function(jsonData){
+    $("#lastUpdate").html(jsonData.time);
+    $("#sortStatus").html(jsonData.sort);
+  });
+}
+</script>
+
+<span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</span>
+<br>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: center;
+}
+th {
+  text-align: center;
+}
+</style>
+
+<table style="width:100%", id="tabData">
+  <tr>
+    <th>Patient ID</th>
+    <th>Lastname</th>
+    <th>Firstname</th>
+    <th>Sex</th>
+    <th>Age</th>
+    <th>Treatment</th>
+    <th>Last Appointment</th>
+    <th>Last Weight</th>
+    <th>Current Weight</th>
+    <th>Change in Weight</th>
+    <th>Last Submission</th>
+  </tr>
+
+  {% for row in tabData %}
+    <tr>
+      <td> {{ row["patientid"] }} </td>
+      <td> {{ row["lastname"] }} </td>
+      <td> {{ row["firstname"] }} </td>
+      <td> {{ row["sex"] }} </td>
+      <td> {{ row["age"] }} </td>
+      <td> {{ row["treatment"] }} </td>
+      <td> {{ row["last_appointment"] }} </td>
+      <td> {{ row["last_weight"] }} </td>
+      <td> {{ row["current_weight"] }} </td>
+      <td> {{ row["change_weight"] }} </td>
+      <td> {{ row["last_submit"] }} </td>
+    </tr>
+  {% endfor %}
+</table>
+
+<span id="sortStatus" style="font-weight: bold;">Sorted by: {{ status }}</span>
+
+
+<div>
+<p> *** OTHER STUFF HERE ***<p/>
+    <table id="gable">
+        <colgroup>
+            <col class="twenty" />
+            <col class="fourty" />
+            <col class="thirtyfive" />
+            <col class="twentyfive" />
+        </colgroup>
+        <tr>
+            <th onclick="sortTable(0)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCOUNTRY</th>
+            <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLOCATION</th>
+            <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspBALANCE</th>
+            <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDATE</th>
+        </tr>
+    </table>
+</div>
