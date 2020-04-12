@@ -15,8 +15,6 @@ th, td {
   text-align: center;
 }
 th {
-  text-align: center;
-  cursor: pointer;
   background-color: powderblue;
 }
 </style>
@@ -27,12 +25,12 @@ Patient ID is {{ p_id }}
 
 <br><br>
 
-<h4>
+<h4 align="center">
   <strong>
     Patient Information:
   </strong>
 </h4>
-<table>
+<table id="patientInfoTab" align="center">
   <thead>
     <tr>
       {% for col in colNames %}
@@ -52,12 +50,12 @@ Patient ID is {{ p_id }}
 
 <br>
 
-<h4>
+<h4 align="center">
   <strong>
     Last Recorded Symptom Level [0-10]:
   </strong>
 </h4>
-<table>
+<table id="patientSympTab" align="center">
   <thead>
     <tr>
       {% for col in colNamesSymp %}
@@ -88,7 +86,7 @@ Patient ID is {{ p_id }}
 <br><br>
 
 <form action="http://127.0.0.1:5000/dashboard" method="post">
-    <button type="submit" name="sort_key" value="{{ defKey }}">
+    <button type="submit" name="sort_key" value="{{ defKey }}" style="background-color:lightsalmon;margin:auto;display:block">
       Back to Dashboard
     </button>
 </form>

@@ -15,8 +15,6 @@ th, td {
   text-align: center;
 }
 th {
-  text-align: center;
-  cursor: pointer;
   background-color: powderblue;
 }
 </style>
@@ -29,13 +27,13 @@ Last update: <span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</
   (Click again to reverse the order)
 </p>
 
-<table style="width:100%", id="patientTable", class="w3-table-all">
+<table style="width:100%" id="patientTable" class="w3-table-all">
 
   <thead>
     <tr>
       {% for col in colNames %}
         <th onclick="submitform('sortBy-{{ col[1] }}')">
-          {{ col[0] }}
+        <p style="cursor: pointer">{{col[0]}}</p>
           <form action="http://127.0.0.1:5000/dashboard" name="sortBy-{{ col[1] }}" method="post">
               <input type="hidden" name="sort_key" value="{{ col[1] }}"/>
           </form>

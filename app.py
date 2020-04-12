@@ -5,18 +5,18 @@ from datetime import date, datetime
 import psycopg2
 import psycopg2.extras
 import json
-import os
 import io
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+# Database login credentials
 DATABASE = "weight_watcher"
 USER = "weight_watcher"
 PASSWORD = "letmewatch"
 HOST = "127.0.0.1"
 PORT = "5432"
 
+# Mapping of formal table headers to column names on database
 DASH_COLUMNS = [
                 ("Patient ID", "patientid"),
                 ("Lastname", "lastname"),
@@ -30,7 +30,6 @@ DASH_COLUMNS = [
                 ("Change in Weight", "change_weight"),
                 ("Last Submission", "last_submit")
                 ]
-
 SYMP_COLUMNS = [
                 ("Nausea", "nausea"),
                 ("Skin Irritation", "skin_irritate"),
@@ -38,13 +37,16 @@ SYMP_COLUMNS = [
                 ("Difficulty Breathing", "diff_breath")
                 ]
 
+# Global variables for sorting functionality
 DEF_SORT_KEY = "change_weight"
 LAST_SORT_KEY = ""
 REV_ORDER = False
 
+# Datetime formats
 DATETIME_FORMAT_LIVE = "%a %b/%d/%Y %H:%M:%S"
 DATETIME_FORMAT_TABLE = "%a %b/%d/%Y"
 
+# Modifiable global variable for recorded weights
 REC_WEIGHTS = []
 
 
@@ -65,7 +67,6 @@ class CustomJSONEncoder(JSONEncoder):
 app = Flask(__name__, template_folder='templates', static_url_path='/static')
 app.json_encoder = CustomJSONEncoder
 app.config["DEBUG"] = True
-# PLOT_PATH = os.path.join('static', 'temp_plot.png')
 
 
 @app.route("/")
@@ -201,6 +202,7 @@ def create_figure(rec_weights):
     ax.set_ylabel('Weights [kg]')
     ax.set_xticks(x_vals)
     ax.grid()
+    fig.tight_layout()
     return fig
 
 
