@@ -1,0 +1,88 @@
+<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: center;
+}
+th {
+  text-align: center;
+  cursor: pointer;
+  background-color: coral;
+}
+</style>
+
+Last update: <span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</span>
+<br>
+
+<p>Click the <strong>table headers</strong> to sort the table accordingly:</p>
+
+<table style="width:100%", id="patientTable", class="table">
+  <!-- class="w3-table-all"> -->
+
+  <thead>
+    <tr>
+      {% for col in colNames %}
+        <th onclick="submitform('sortBy-{{ col[1] }}')">
+          {{ col[0] }}
+          <form action="http://127.0.0.1:5000/dashboard" name="sortBy-{{ col[1] }}" method="post">
+              <input type="hidden" name="sort_key" value="{{ col[1] }}"/>
+          </form>
+        </th>
+      {% endfor %}
+    </tr>
+  </thead>
+
+  <tbody id="tabBody">
+  {% for row in tabData %}
+    <tr>
+    {% for col in colNames %}
+      <td> {{ row[col[1]] }} </td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+
+</table>
+
+Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</span>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  let column_names = {{ colNames|tojson }};
+
+  // function to update page info
+  $(document).ready(function() {
+      setInterval("ajaxd()", 10000); // call every 10 seconds
+  });
+
+  function updateTable(tableId, jsonData){
+    // update table info using JSON data
+    var tableHTML = "";
+    for (var item in jsonData) {
+      var row = jsonData[item];
+      tableHTML += "<tr>";
+      for (const name_pair of column_names) {
+        tableHTML += "<td>" + row[name_pair[1]] + "</td>"
+      }
+      tableHTML += "</tr>";
+    }
+    document.getElementById(tableId).innerHTML = tableHTML;
+  }
+
+  function ajaxd() {
+    // grabs latest table info (as JSON) and updates page variables
+    $.getJSON("/update_dash", function(jsonData){
+      $("#lastUpdate").html(jsonData.time);
+      $("#sortStatus").html(jsonData.sort);
+      updateTable("tabBody", jsonData.tab_dat);
+    });
+  }
+
+  function submitform(formname) {
+    document[formname].submit();
+  }
+</script>

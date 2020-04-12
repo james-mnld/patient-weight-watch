@@ -1,0 +1,98 @@
+<html>
+
+<head>
+  <title>Patient {{ p_id }}</title>
+</head>
+
+<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: center;
+}
+th {
+  text-align: center;
+  cursor: pointer;
+  background-color: powderblue;
+}
+</style>
+
+<body>
+
+Patient ID is {{ p_id }}
+
+<br><br>
+
+<h4>
+  <strong>
+    Patient Information:
+  </strong>
+</h4>
+<table>
+  <thead>
+    <tr>
+      {% for col in colNames %}
+        <th>{{ col[0] }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+    {% for col in colNames %}
+      <td> {{ row_info[col[1]] }} </td>
+    {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<h4>
+  <strong>
+    Last Recorded Symptom Level [0-10]:
+  </strong>
+</h4>
+<table>
+  <thead>
+    <tr>
+      {% for col in colNamesSymp %}
+        <th>{{ col[0] }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+    {% for col in colNamesSymp %}
+      <td> {{ row_symp[col[1]] }} </td>
+    {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<h4>
+  <strong>
+    Recorded Weights:
+  </strong>
+</h4>
+
+<img src="/weights_plot.png">
+
+<br><br>
+
+<form action="http://127.0.0.1:5000/dashboard" method="post">
+    <button type="submit" name="sort_key" value="{{ defKey }}">
+      Back to Dashboard
+    </button>
+</form>
+
+</body>
+
+</html>

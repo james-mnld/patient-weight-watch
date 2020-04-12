@@ -1,40 +1,10 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    setInterval("ajaxd()",10000); // call every 10 seconds
-});
+<html>
 
-function updateTable(tableId, jsonData){
-  var tableHTML = "<tr>";
-  for (var headers in jsonData[0]) {
-    tableHTML += "<th>" + headers + "</th>";
-  }
-  tableHTML += "</tr>";
+<head>
+  <title>Dashboard - Weight_Watcher</title>
+</head>
 
-  for (var eachItem in jsonData) {
-    tableHTML += "<tr>";
-    var dataObj = jsonData[eachItem];
-    for (var eachValue in dataObj){
-      tableHTML += "<td>" + dataObj[eachValue] + "</td>";
-    }
-    tableHTML += "</tr>";
-  }
-  document.getElementById(tableId).innerHTML = tableHTML;
-}
-
-function ajaxd() {
-  //reload result into element with id "lastUpdate"
-  // $("#lastUpdate").load("/update_dash")
-  $.getJSON("/update_dash", function(jsonData){
-    $("#lastUpdate").html(jsonData.time);
-    $("#sortStatus").html(jsonData.sort);
-  });
-}
-</script>
-
-<span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</span>
-<br>
-
+<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
 <style>
 table, th, td {
   border: 1px solid black;
@@ -46,58 +16,96 @@ th, td {
 }
 th {
   text-align: center;
+  cursor: pointer;
+  background-color: powderblue;
 }
 </style>
 
-<table style="width:100%", id="tabData">
-  <tr>
-    <th>Patient ID</th>
-    <th>Lastname</th>
-    <th>Firstname</th>
-    <th>Sex</th>
-    <th>Age</th>
-    <th>Treatment</th>
-    <th>Last Appointment</th>
-    <th>Last Weight</th>
-    <th>Current Weight</th>
-    <th>Change in Weight</th>
-    <th>Last Submission</th>
-  </tr>
+Last update: <span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</span>
+<br>
 
-  {% for row in tabData %}
+<p>
+  Click the <strong>table headers</strong> to sort the table accordingly: <br>
+  (Click again to reverse the order)
+</p>
+
+<table style="width:100%", id="patientTable", class="w3-table-all">
+
+  <thead>
     <tr>
-      <td> {{ row["patientid"] }} </td>
-      <td> {{ row["lastname"] }} </td>
-      <td> {{ row["firstname"] }} </td>
-      <td> {{ row["sex"] }} </td>
-      <td> {{ row["age"] }} </td>
-      <td> {{ row["treatment"] }} </td>
-      <td> {{ row["last_appointment"] }} </td>
-      <td> {{ row["last_weight"] }} </td>
-      <td> {{ row["current_weight"] }} </td>
-      <td> {{ row["change_weight"] }} </td>
-      <td> {{ row["last_submit"] }} </td>
+      {% for col in colNames %}
+        <th onclick="submitform('sortBy-{{ col[1] }}')">
+          {{ col[0] }}
+          <form action="http://127.0.0.1:5000/dashboard" name="sortBy-{{ col[1] }}" method="post">
+              <input type="hidden" name="sort_key" value="{{ col[1] }}"/>
+          </form>
+        </th>
+      {% endfor %}
+        <th>RT and Symptoms</th>
     </tr>
-  {% endfor %}
+  </thead>
+
+  <tbody id="tabBody">
+    {% for row in tabData %}
+      <tr>
+      {% for col in colNames %}
+        <td> {{ row[col[1]] }} </td>
+      {% endfor %}
+        <td>
+          <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
+              <button type="submit" name="p_id" value="{{ row['patientid'] }}">...</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+
 </table>
 
-<span id="sortStatus" style="font-weight: bold;">Sorted by: {{ status }}</span>
+Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</span>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  let column_names = {{ colNames|tojson }};
 
-<div>
-<p> *** OTHER STUFF HERE ***<p/>
-    <table id="gable">
-        <colgroup>
-            <col class="twenty" />
-            <col class="fourty" />
-            <col class="thirtyfive" />
-            <col class="twentyfive" />
-        </colgroup>
-        <tr>
-            <th onclick="sortTable(0)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspCOUNTRY</th>
-            <th onclick="sortTable(1)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspLOCATION</th>
-            <th onclick="sortTable(2)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspBALANCE</th>
-            <th onclick="sortTable(3)"><span class="glyphicon glyphicon-sort"></span>&nbsp&nbspDATE</th>
-        </tr>
-    </table>
-</div>
+  // function to update page info
+  $(document).ready(function() {
+      setInterval("ajaxd()", 10000); // call every 10 seconds
+  });
+
+  function updateTable(tableId, jsonData){
+    // update table info using JSON data
+    var tableHTML = "";
+    for (var item in jsonData) {
+      var row = jsonData[item];
+      tableHTML += "<tr>";
+      for (const name_pair of column_names) {
+        tableHTML += "<td>" + row[name_pair[1]] + "</td>"
+      }
+      tableHTML += `<td>
+        <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
+            <button type="submit" name="p_id" value=` +
+            row['patientid'] +
+            `>...</button>
+        </form>
+        </td>`;
+      tableHTML += "</tr>";
+    }
+    document.getElementById(tableId).innerHTML = tableHTML;
+  }
+
+  function ajaxd() {
+    // grabs latest table info (as JSON) and updates page variables
+    $.getJSON("/update_dash", function(jsonData){
+      $("#lastUpdate").html(jsonData.time);
+      $("#sortStatus").html(jsonData.sort);
+      updateTable("tabBody", jsonData.tab_dat);
+    });
+  }
+
+  function submitform(formname) {
+    document[formname].submit();
+  }
+</script>
+
+</html>

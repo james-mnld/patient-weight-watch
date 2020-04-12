@@ -1,75 +1,87 @@
-<form method="POST", action="http://127.0.0.1:5000/update_db">
-  <th>Patient ID <input name="p_id"> </th>
-  <br> <br>
+<html>
 
-  <th>Weight <input name="p_weight"> kg</th>
-  <br> <br>
+<head>
+  <title>Patient Symptoms Form</title>
+</head>
 
-  <label for="nausea">Nausea </label>
-  <select id="nausea" name="p_nausea">
-      <option value=0>0</option>
-      <option value=1>1</option>
-      <option value=2>2</option>
-      <option value=3>3</option>
-      <option value=4>4</option>
-      <option value=5>5</option>
-      <option value=6>6</option>
-      <option value=7>7</option>
-      <option value=8>8</option>
-      <option value=9>9</option>
-      <option value=10>10</option>
-  </select>
-  <br> <br>
+<body>
+  <h2>Please fill-up the following form:</h2>
 
-  <label for="skinirr">Skin irritation </label>
-  <select id="skinirr" name="p_skinirr">
-      <option value=0>0</option>
-      <option value=1>1</option>
-      <option value=2>2</option>
-      <option value=3>3</option>
-      <option value=4>4</option>
-      <option value=5>5</option>
-      <option value=6>6</option>
-      <option value=7>7</option>
-      <option value=8>8</option>
-      <option value=9>9</option>
-      <option value=10>10</option>
-  </select>
-  <br> <br>
+  <form method="POST", action="http://127.0.0.1:5000/update_db">
+    <th>Patient ID <input name="p_id"> </th>
+    <br> <br>
 
-  <label for="diffswall">Difficulty swallowing </label>
-  <select id="diffswall" name="p_diffswall">
-      <option value=0>0</option>
-      <option value=1>1</option>
-      <option value=2>2</option>
-      <option value=3>3</option>
-      <option value=4>4</option>
-      <option value=5>5</option>
-      <option value=6>6</option>
-      <option value=7>7</option>
-      <option value=8>8</option>
-      <option value=9>9</option>
-      <option value=10>10</option>
-  </select>
-  <br> <br>
+    <th>Weight <input name="p_weight"> kg</th>
+    <br> <br>
 
-  <label for="diffbreath">Difficulty breathing </label>
-  <select id="diffbreath" name="p_diffbreath">
-      <option value=0>0</option>
-      <option value=1>1</option>
-      <option value=2>2</option>
-      <option value=3>3</option>
-      <option value=4>4</option>
-      <option value=5>5</option>
-      <option value=6>6</option>
-      <option value=7>7</option>
-      <option value=8>8</option>
-      <option value=9>9</option>
-      <option value=10>10</option>
-  </select>
-  <br> <br>
+    <label for="nausea">Nausea </label>
+    <select id="nausea" name="p_nausea">
+        <option value=0>0</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+        <option value=5>5</option>
+        <option value=6>6</option>
+        <option value=7>7</option>
+        <option value=8>8</option>
+        <option value=9>9</option>
+        <option value=10>10</option>
+    </select>
+    <br> <br>
 
-  <td>
-  <input type="submit">
-  </td>
-</form>
+    <label for="skinirr">Skin irritation </label>
+    <select id="skinirr" name="p_skinirr">
+        <option value=0>0</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+        <option value=5>5</option>
+        <option value=6>6</option>
+        <option value=7>7</option>
+        <option value=8>8</option>
+        <option value=9>9</option>
+        <option value=10>10</option>
+    </select>
+    <br> <br>
+
+    <label for="diffswall">Difficulty swallowing </label>
+    <select id="diffswall" name="p_diffswall">
+        <option value=0>0</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+        <option value=5>5</option>
+        <option value=6>6</option>
+        <option value=7>7</option>
+        <option value=8>8</option>
+        <option value=9>9</option>
+        <option value=10>10</option>
+    </select>
+    <br> <br>
+
+    <label for="diffbreath">Difficulty breathing </label>
+    <select id="diffbreath" name="p_diffbreath">
+        <option value=0>0</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+        <option value=5>5</option>
+        <option value=6>6</option>
+        <option value=7>7</option>
+        <option value=8>8</option>
+        <option value=9>9</option>
+        <option value=10>10</option>
+    </select>
+    <br> <br>
+
+    <td>
+    <input type="submit">
+    </td>
+  </form>
+</body>
+
+</html>
