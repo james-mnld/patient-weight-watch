@@ -163,42 +163,6 @@ def get_RTsymptoms():
                            colNames=DASH_COLUMNS, colNamesSymp=SYMP_COLUMNS)
 
 
-def reformat_path_dict(paths_dict):
-    paths_dict_new = {}
-    for key in IMAG_COLUMNS:
-        # remove excess string
-        str_new = re.sub(PATH_EXCESS, '', paths_dict[key])
-        paths_list = str_new.split(', ')
-        paths_dict_new[key] = build_treatment_dict(paths_list)
-    return paths_dict_new
-
-
-def build_treatment_dict(paths_list):
-    treatment_dict_new = {}
-    ctr = 1  # assumes that paths in list are arranged by treatment number
-    for path in sorted(paths_list):
-        while(True):
-            str_pattern = '/t' + str(ctr) + '/'
-            key = 't' + str(ctr)
-            if str_pattern in path:
-                if key not in treatment_dict_new.keys():
-                    treatment_dict_new[key] = [path]
-                else:
-                    treatment_dict_new[key].append(path)
-                break
-            else:
-                ctr += 1
-    return treatment_dict_new
-
-
-def all_dict_have_same_keys(root_dict):
-    ref = len(root_dict[IMAG_COLUMNS[0]].keys())
-    for i in range(1, len(IMAG_COLUMNS)):
-        if len(root_dict[IMAG_COLUMNS[0]].keys()) != ref:
-            return False
-    return True
-
-
 # Function called upon submission of symptom webform (db for database)
 @app.route('/update_db', methods=['POST'])
 def update_db():
@@ -306,6 +270,45 @@ def update_last_sort(sort_key):
         REV_ORDER = False
     # print("LAST_SORT_KEY updated to:", LAST_SORT_KEY)
     # print("REV_ORDER updated to:", REV_ORDER)
+
+
+# Helper function to reformat paths dictionary to hand treatment days
+def reformat_path_dict(paths_dict):
+    paths_dict_new = {}
+    for key in IMAG_COLUMNS:
+        # remove excess string
+        str_new = re.sub(PATH_EXCESS, '', paths_dict[key])
+        paths_list = str_new.split(', ')
+        paths_dict_new[key] = build_treatment_dict(paths_list)
+    return paths_dict_new
+
+
+# Helper function to build dictionary for treatment days
+def build_treatment_dict(paths_list):
+    treatment_dict_new = {}
+    ctr = 1  # assumes that paths in list are arranged by treatment number
+    for path in sorted(paths_list):
+        while(True):
+            str_pattern = '/t' + str(ctr) + '/'
+            key = 't' + str(ctr)
+            if str_pattern in path:
+                if key not in treatment_dict_new.keys():
+                    treatment_dict_new[key] = [path]
+                else:
+                    treatment_dict_new[key].append(path)
+                break
+            else:
+                ctr += 1
+    return treatment_dict_new
+
+
+# Helper function to check if all dictionaries have the same keys
+def all_dict_have_same_keys(root_dict):
+    ref = len(root_dict[IMAG_COLUMNS[0]].keys())
+    for i in range(1, len(IMAG_COLUMNS)):
+        if len(root_dict[IMAG_COLUMNS[0]].keys()) != ref:
+            return False
+    return True
 
 
 if __name__ == '__main__':

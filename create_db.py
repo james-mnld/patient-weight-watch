@@ -8,6 +8,10 @@ PASSWORD = "letmewatch"
 HOST = "127.0.0.1"
 PORT = "5432"
 
+"""
+This script builds all required database and populates them with mock data
+"""
+
 # create PATIENT_INFO database
 con = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD,
                        host=HOST, port=PORT)
@@ -111,7 +115,6 @@ con.commit()
 
 
 # populate PATIENT_IMAGES database
-
 path_img_root = '/static/patient_images/'
 N_patients = 9
 paths_list = []

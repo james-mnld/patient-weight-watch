@@ -7,117 +7,121 @@
 <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
 
 <style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 5px;
-  text-align: center;
-}
-th {
-  background-color: powderblue;
-}
-div.container {
-  display:inline-block;
-  width: 50%;
-}
-p {
-  text-align:center;
-}
+  table,
+  th,
+  td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 5px;
+    text-align: center;
+  }
+
+  th {
+    background-color: powderblue;
+  }
+
+  div.container {
+    display: inline-block;
+    width: 50%;
+  }
+
+  p {
+    text-align: center;
+  }
 </style>
 
 <body>
 
-<!-- Patient ID is {{ p_id }} -->
-<br>
+  <br>
 
-<form action="http://127.0.0.1:5000/dashboard" method="get">
+  <form action="http://127.0.0.1:5000/dashboard" method="get">
     <button class="w3-button w3-black" type="submit" style="cursor:pointer;margin:auto;display:block">
       Back to Dashboard
     </button>
-</form>
+  </form>
 
+  <br>
 
-<br>
-
-
-<div class="container" style="width:60%;float:left;padding:20px;">
-  <h3 align="center">
-    <strong>
-      Patient Information:
-    </strong>
-  </h3>
-  <table id="patientInfoTab" align="center">
-    <thead>
-      <tr>
-        {% for col in colNames %}
+  <div class="container" style="width:60%;float:left;padding:20px;">
+    <h3 align="center">
+      <strong>
+        Patient Information:
+      </strong>
+    </h3>
+    <table id="patientInfoTab" align="center">
+      <thead>
+        <tr>
+          {% for col in colNames %}
           <th>{{ col[0] }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
+          {% endfor %}
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr>
-      {% for col in colNames %}
-        <td> {{ row_info[col[1]] }} </td>
-      {% endfor %}
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <tr>
+          {% for col in colNames %}
+          <td> {{ row_info[col[1]] }} </td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3 align="center">
+      <strong>
+        Last Recorded Symptom Level [0-10]:
+      </strong>
+    </h3>
+    <table id="patientSympTab" align="center">
+      <thead>
+        <tr>
+          {% for col in colNamesSymp %}
+          <th>{{ col[0] }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          {% for col in colNamesSymp %}
+          <td> {{ row_symp[col[1]] }} </td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container" style="width:40%;float:left;padding:10px;">
+    <h3 align="center">
+      <strong>
+        Recorded Weights:
+      </strong>
+    </h3>
+    <p>
+      <img src="/weights_plot.png" width="75%">
+    </p>
+  </div>
 
   <br><br>
 
   <h3 align="center">
     <strong>
-      Last Recorded Symptom Level [0-10]:
+      Dicom Information:
     </strong>
   </h3>
-  <table id="patientSympTab" align="center">
-    <thead>
-      <tr>
-        {% for col in colNamesSymp %}
-          <th>{{ col[0] }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
 
-    <tbody>
-      <tr>
-      {% for col in colNamesSymp %}
-        <td> {{ row_symp[col[1]] }} </td>
-      {% endfor %}
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="container" style="width:40%;float:left;padding:10px;">
-  <h3 align="center">
-    <strong>
-      Recorded Weights:
-    </strong>
-  </h3>
-  <p>
-      <img src="/weights_plot.png" width="75%">
-  </p>
-</div>
-
-<br><br>
-
-<h3 align="center">
-  <strong>
-    Dicom Information:
-  </strong>
-</h3>
-
-<div class="w3-container" align="center">
-  {% for pair in t_keys %}
+  <div class="w3-container" align="center">
+    {% for pair in t_keys %}
     <button class="w3-button demo" onclick="currentSet({{ pair[0] }})">{{ pair[0] }}</button>
-  {% endfor %}
-</div>
+    {% endfor %}
+  </div>
 
-{% for pair in t_keys %}
+  {% for pair in t_keys %}
   <span class="imageSet">
     <table align="center" width="100%">
       <tr>
@@ -133,21 +137,21 @@ p {
         </td>
 
         <td>
-            {% for item in row_imag['ct_path'][pair[1]] %}
-              <img class="CTSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
-            {% endfor %}
+          {% for item in row_imag['ct_path'][pair[1]] %}
+          <img class="CTSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+          {% endfor %}
         </td>
 
         <td>
-            {% for item in row_imag['ctcont_path'][pair[1]] %}
-              <img class="CTstructSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
-            {% endfor %}
+          {% for item in row_imag['ctcont_path'][pair[1]] %}
+          <img class="CTstructSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+          {% endfor %}
         </td>
 
         <td>
-            {% for item in row_imag['rt_path'][pair[1]] %}
-              <img class="RTdoseSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
-            {% endfor %}
+          {% for item in row_imag['rt_path'][pair[1]] %}
+          <img class="RTdoseSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+          {% endfor %}
         </td>
 
         <td>
@@ -157,63 +161,71 @@ p {
       </tr>
     </table>
   </span>
-{% endfor %}
+  {% endfor %}
 
-<script>
-  var setIndex = 1;
-  var slideIndex = 1;
+  <script>
+    var setIndex = 1;
+    var slideIndex = 1;
 
-  let slide_classes = ['CTSlides', 'CTstructSlides', 'RTdoseSlides'];
+    let slide_classes = ['CTSlides', 'CTstructSlides', 'RTdoseSlides'];
 
-  showSet(setIndex);
-  showDivs(slideIndex);
+    showSet(setIndex);
+    showDivs(slideIndex);
 
-  function plusDivs(n) {
-    showDivs(slideIndex += n);
-  }
+    function plusDivs(n) {
+      showDivs(slideIndex += n);
+    }
 
-  function showDivs(n) {
-    var i;
-    for (const className of slide_classes){
-      var x = document.getElementsByClassName(className + setIndex.toString());
-      if (n > x.length) {slideIndex = 1}
-      if (n < 1) {slideIndex = x.length}
+    function showDivs(n) {
+      var i;
+      for (const className of slide_classes) {
+        var x = document.getElementsByClassName(className + setIndex.toString());
+        if (n > x.length) {
+          slideIndex = 1
+        }
+        if (n < 1) {
+          slideIndex = x.length
+        }
+        for (i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+        }
+        x[slideIndex - 1].style.display = "block";
+      }
+    }
+
+    function currentSet(n) {
+      showSet(setIndex = n);
+    }
+
+    function showSet(n) {
+      var i;
+      var x = document.getElementsByClassName("imageSet");
+      var dots = document.getElementsByClassName("demo");
+      if (n > x.length) {
+        setIndex = 1
+      }
+      if (n < 1) {
+        setIndex = x.length
+      }
       for (i = 0; i < x.length; i++) {
         x[i].style.display = "none";
       }
-      x[slideIndex-1].style.display = "block";
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" w3-black", "");
+      }
+      x[setIndex - 1].style.display = "block";
+      dots[setIndex - 1].className += " w3-black";
+      showDivs(1);
     }
-  }
+  </script>
 
-  function currentSet(n) {
-    showSet(setIndex = n);
-  }
+  <br><br>
 
-  function showSet(n) {
-    var i;
-    var x = document.getElementsByClassName("imageSet");
-    var dots = document.getElementsByClassName("demo");
-    if (n > x.length) {setIndex = 1}
-    if (n < 1) {setIndex = x.length}
-    for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-    }
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" w3-black", "");
-    }
-    x[setIndex-1].style.display = "block";
-    dots[setIndex-1].className += " w3-black";
-    showDivs(1);
-  }
-</script>
-
-<br><br>
-
-<form action="http://127.0.0.1:5000/dashboard" method="get">
+  <form action="http://127.0.0.1:5000/dashboard" method="get">
     <button class="w3-button w3-black" type="submit" style="cursor:pointer;margin:auto;display:block">
       Back to Dashboard
     </button>
-</form>
+  </form>
 
 </body>
 
