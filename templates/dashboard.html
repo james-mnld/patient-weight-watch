@@ -1,3 +1,10 @@
+<html>
+
+<head>
+  <title>Dashboard - Weight_Watcher</title>
+</head>
+
+<body>
 <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
 <style>
 table, th, td {
@@ -9,46 +16,70 @@ th, td {
   text-align: center;
 }
 th {
-  text-align: center;
-  cursor: pointer;
-  background-color: coral;
+  background-color: powderblue;
 }
 </style>
-
-Last update: <span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</span>
 <br>
 
-<p>Click the <strong>table headers</strong> to sort the table accordingly:</p>
+<h1 align="center">
+  <b>
+    Weight-Watcher Dashboard
+  </b>
+</h1>
 
-<table style="width:100%", id="patientTable", class="table">
-  <!-- class="w3-table-all"> -->
+&nbsp;&nbsp;Last update: <span id="lastUpdate" class="w3-animate-fading" style="font-weight: bold;">{{ lastUpdate }}</span>
+<br>
+
+<p>
+  &nbsp;&nbsp;Click the <strong>table headers</strong> to sort the table accordingly  (Click again to reverse the order) <br>
+</p>
+<p>
+&nbsp;&nbsp;Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</span>
+</p>
+<br>
+
+<table style="width:100%" id="patientTable" class="w3-table-all">
 
   <thead>
     <tr>
       {% for col in colNames %}
         <th onclick="submitform('sortBy-{{ col[1] }}')">
-          {{ col[0] }}
+        <p style="cursor: pointer">{{col[0]}}</p>
           <form action="http://127.0.0.1:5000/dashboard" name="sortBy-{{ col[1] }}" method="post">
               <input type="hidden" name="sort_key" value="{{ col[1] }}"/>
           </form>
         </th>
       {% endfor %}
+        <th>RT and Symptoms</th>
     </tr>
   </thead>
 
   <tbody id="tabBody">
-  {% for row in tabData %}
-    <tr>
-    {% for col in colNames %}
-      <td> {{ row[col[1]] }} </td>
+    {% for row in tabData %}
+      <tr>
+      {% for col in colNames %}
+        <td> {{ row[col[1]] }} </td>
+      {% endfor %}
+        <td>
+          {% if row['change_weight'] < threshold[0] %}
+            {% set color = 'red' %}
+          {% elif row['change_weight'] < threshold[1] %}
+            {% set color = 'yellow' %}
+          {% else %}
+            {% set color = 'green' %}
+          {% endif %}
+          <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
+              <button class="w3-btn w3-{{ color }}" type="submit" name="p_id" value="{{ row['patientid'] }}"
+                      style="cursor:pointer">...</button>
+          </form>
+        </td>
+      </tr>
     {% endfor %}
-    </tr>
-  {% endfor %}
   </tbody>
 
 </table>
 
-Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</span>
+<br><br>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
@@ -64,10 +95,21 @@ Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</sp
     var tableHTML = "";
     for (var item in jsonData) {
       var row = jsonData[item];
+      var color;
+      if (row['change_weight'] < {{ threshold[0] }}) { color = 'red' }
+      else if (row['change_weight'] < {{ threshold[1] }}) { color = 'yellow' }
+      else {color = 'green'}
+
       tableHTML += "<tr>";
       for (const name_pair of column_names) {
         tableHTML += "<td>" + row[name_pair[1]] + "</td>"
       }
+      tableHTML += `<td>
+        <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
+            <button type="submit" class="w3-btn w3-` + color + `" name="p_id" value=` + row['patientid'] +
+            ` style="cursor:pointer;">...</button>
+        </form>
+        </td>`;
       tableHTML += "</tr>";
     }
     document.getElementById(tableId).innerHTML = tableHTML;
@@ -86,3 +128,7 @@ Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</sp
     document[formname].submit();
   }
 </script>
+
+</body>
+
+</html>

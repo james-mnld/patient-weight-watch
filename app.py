@@ -6,6 +6,8 @@ import psycopg2
 import psycopg2.extras
 import json
 import io
+import os
+import re
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -36,11 +38,15 @@ SYMP_COLUMNS = [
                 ("Difficulty Swallowing", "diff_swallow"),
                 ("Difficulty Breathing", "diff_breath")
                 ]
+IMAG_COLUMNS = ['ct_path', 'ctcont_path', 'rt_path']
 
 # Global variables for sorting functionality
 DEF_SORT_KEY = "change_weight"
 LAST_SORT_KEY = ""
 REV_ORDER = False
+
+# Weight threshold for color coding
+WEIGHT_THRESH = [-3, 0]
 
 # Datetime formats
 DATETIME_FORMAT_LIVE = "%a %b/%d/%Y %H:%M:%S"
@@ -48,6 +54,10 @@ DATETIME_FORMAT_TABLE = "%a %b/%d/%Y"
 
 # Modifiable global variable for recorded weights
 REC_WEIGHTS = []
+
+# Excess path information
+PATH_EXCESS = os.path.join('/home/skadi/Documents/MSc/W20/Instr_and_Comp/',
+                           'Project', 'patient-weight-watch')
 
 
 # JSON encoder to keep dates in the format yyyy-mm-dd
@@ -89,11 +99,9 @@ def dashboard():
         lastUpdate = jsonDat["time"]
         sortStatus = jsonDat["sort"]
 
-    return render_template('test.html', tabData=tabData, colNames=DASH_COLUMNS,
-                           lastUpdate=lastUpdate, sortStatus=sortStatus)
-    # return render_template('dashboard.html', tabData=tabData,
-    #                        colNames=DASH_COLUMNS, lastUpdate=lastUpdate,
-    #                        sortStatus=sortStatus)
+    return render_template('dashboard.html', tabData=tabData,
+                           colNames=DASH_COLUMNS, lastUpdate=lastUpdate,
+                           sortStatus=sortStatus, threshold=WEIGHT_THRESH)
 
 
 # Function that sends time, sort, and database info as json to "/update_dash"
@@ -130,6 +138,8 @@ def get_RTsymptoms():
     response = exec_db_command(command_query_info_db, 1)
     row_info = build_weights(response)[0]  # just take the only element in list
     rec_weights_arr = [float(x) for x in row_info['rec_weights'].split(', ')]
+
+    # update global REC_WEIGHTS
     global REC_WEIGHTS
     REC_WEIGHTS = rec_weights_arr
 
@@ -138,16 +148,55 @@ def get_RTsymptoms():
                         WHERE PATIENTID = %i""" % p_id
     row_symp = exec_db_command(command_query_symp_db, 1)[0]
 
-    # lvl_nausea = row_symp['nausea']
-    # lvl_skinirr = row_symp['skin_irritate']
-    # lvl_diffswal = row_symp['diff_swallow']
-    # lvl_diffbreath = row_symp['diff_breath']
+    # query PATIENT_IMAGES using p_id
+    command_query_imag_db = """SELECT * FROM PATIENT_IMAGES
+                        WHERE PATIENTID = %i""" % p_id
+    response = exec_db_command(command_query_imag_db, 1)[0]
+    row_imag = reformat_path_dict(response)
 
-    # TODO: query PATIENT_IMAGE using p_id
+    assert all_dict_have_same_keys(row_imag)
+    t_keys = [(i+1, x) for i, x in enumerate(row_imag[IMAG_COLUMNS[0]].keys())]
 
     return render_template('RT_symptoms.html', p_id=p_id, defKey=DEF_SORT_KEY,
                            row_info=row_info, row_symp=row_symp,
+                           row_imag=row_imag, t_keys=t_keys,
                            colNames=DASH_COLUMNS, colNamesSymp=SYMP_COLUMNS)
+
+
+def reformat_path_dict(paths_dict):
+    paths_dict_new = {}
+    for key in IMAG_COLUMNS:
+        # remove excess string
+        str_new = re.sub(PATH_EXCESS, '', paths_dict[key])
+        paths_list = str_new.split(', ')
+        paths_dict_new[key] = build_treatment_dict(paths_list)
+    return paths_dict_new
+
+
+def build_treatment_dict(paths_list):
+    treatment_dict_new = {}
+    ctr = 1  # assumes that paths in list are arranged by treatment number
+    for path in sorted(paths_list):
+        while(True):
+            str_pattern = '/t' + str(ctr) + '/'
+            key = 't' + str(ctr)
+            if str_pattern in path:
+                if key not in treatment_dict_new.keys():
+                    treatment_dict_new[key] = [path]
+                else:
+                    treatment_dict_new[key].append(path)
+                break
+            else:
+                ctr += 1
+    return treatment_dict_new
+
+
+def all_dict_have_same_keys(root_dict):
+    ref = len(root_dict[IMAG_COLUMNS[0]].keys())
+    for i in range(1, len(IMAG_COLUMNS)):
+        if len(root_dict[IMAG_COLUMNS[0]].keys()) != ref:
+            return False
+    return True
 
 
 # Function called upon submission of symptom webform (db for database)
@@ -255,8 +304,8 @@ def update_last_sort(sort_key):
         # update sort key and reset sort order
         LAST_SORT_KEY = sort_key
         REV_ORDER = False
-    print("LAST_SORT_KEY updated to:", LAST_SORT_KEY)
-    print("REV_ORDER updated to:", REV_ORDER)
+    # print("LAST_SORT_KEY updated to:", LAST_SORT_KEY)
+    # print("REV_ORDER updated to:", REV_ORDER)
 
 
 if __name__ == '__main__':

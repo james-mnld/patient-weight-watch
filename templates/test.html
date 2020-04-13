@@ -51,7 +51,7 @@ Last update: <span id="lastUpdate" style="font-weight: bold;">{{ lastUpdate }}</
       {% endfor %}
         <td>
           <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
-              <button type="submit" name="p_id" value="{{ row['patientid'] }}">...</button>
+              <button type="submit" name="p_id" value="{{ row['patientid'] }}" style="cursor:pointer;">...</button>
           </form>
         </td>
       </tr>

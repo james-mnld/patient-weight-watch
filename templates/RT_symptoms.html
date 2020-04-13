@@ -5,6 +5,7 @@
 </head>
 
 <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+
 <style>
 table, th, td {
   border: 1px solid black;
@@ -17,76 +18,199 @@ th, td {
 th {
   background-color: powderblue;
 }
+div.container {
+  display:inline-block;
+  width: 50%;
+}
+p {
+  text-align:center;
+}
 </style>
 
 <body>
 
-Patient ID is {{ p_id }}
+<!-- Patient ID is {{ p_id }} -->
+<br>
 
-<br><br>
+<form action="http://127.0.0.1:5000/dashboard" method="get">
+    <button class="w3-button w3-black" type="submit" style="cursor:pointer;margin:auto;display:block">
+      Back to Dashboard
+    </button>
+</form>
 
-<h4 align="center">
-  <strong>
-    Patient Information:
-  </strong>
-</h4>
-<table id="patientInfoTab" align="center">
-  <thead>
-    <tr>
+
+<br>
+
+
+<div class="container" style="width:60%;float:left;padding:20px;">
+  <h3 align="center">
+    <strong>
+      Patient Information:
+    </strong>
+  </h3>
+  <table id="patientInfoTab" align="center">
+    <thead>
+      <tr>
+        {% for col in colNames %}
+          <th>{{ col[0] }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
       {% for col in colNames %}
-        <th>{{ col[0] }}</th>
+        <td> {{ row_info[col[1]] }} </td>
       {% endfor %}
-    </tr>
-  </thead>
+      </tr>
+    </tbody>
+  </table>
 
-  <tbody>
-    <tr>
-    {% for col in colNames %}
-      <td> {{ row_info[col[1]] }} </td>
-    {% endfor %}
-    </tr>
-  </tbody>
-</table>
+  <br><br>
 
-<br>
+  <h3 align="center">
+    <strong>
+      Last Recorded Symptom Level [0-10]:
+    </strong>
+  </h3>
+  <table id="patientSympTab" align="center">
+    <thead>
+      <tr>
+        {% for col in colNamesSymp %}
+          <th>{{ col[0] }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
 
-<h4 align="center">
-  <strong>
-    Last Recorded Symptom Level [0-10]:
-  </strong>
-</h4>
-<table id="patientSympTab" align="center">
-  <thead>
-    <tr>
+    <tbody>
+      <tr>
       {% for col in colNamesSymp %}
-        <th>{{ col[0] }}</th>
+        <td> {{ row_symp[col[1]] }} </td>
       {% endfor %}
-    </tr>
-  </thead>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  <tbody>
-    <tr>
-    {% for col in colNamesSymp %}
-      <td> {{ row_symp[col[1]] }} </td>
-    {% endfor %}
-    </tr>
-  </tbody>
-</table>
-
-<br>
-
-<h4>
-  <strong>
-    Recorded Weights:
-  </strong>
-</h4>
-
-<img src="/weights_plot.png">
+<div class="container" style="width:40%;float:left;padding:10px;">
+  <h3 align="center">
+    <strong>
+      Recorded Weights:
+    </strong>
+  </h3>
+  <p>
+      <img src="/weights_plot.png" width="75%">
+  </p>
+</div>
 
 <br><br>
 
-<form action="http://127.0.0.1:5000/dashboard" method="post">
-    <button type="submit" name="sort_key" value="{{ defKey }}" style="background-color:lightsalmon;margin:auto;display:block">
+<h3 align="center">
+  <strong>
+    Dicom Information:
+  </strong>
+</h3>
+
+<div class="w3-container" align="center">
+  {% for pair in t_keys %}
+    <button class="w3-button demo" onclick="currentSet({{ pair[0] }})">{{ pair[0] }}</button>
+  {% endfor %}
+</div>
+
+{% for pair in t_keys %}
+  <span class="imageSet">
+    <table align="center" width="100%">
+      <tr>
+        <th></th>
+        <th>CT</th>
+        <th>CT with contours</th>
+        <th>RT dose</th>
+        <th></th>
+      </tr>
+      <tr>
+        <td>
+          <button class="w3-button w3-black" onclick="plusDivs(-1)">&#10094;</button>
+        </td>
+
+        <td>
+            {% for item in row_imag['ct_path'][pair[1]] %}
+              <img class="CTSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+            {% endfor %}
+        </td>
+
+        <td>
+            {% for item in row_imag['ctcont_path'][pair[1]] %}
+              <img class="CTstructSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+            {% endfor %}
+        </td>
+
+        <td>
+            {% for item in row_imag['rt_path'][pair[1]] %}
+              <img class="RTdoseSlides{{ pair[0] }}" src="{{ item }}" style="width:100%">
+            {% endfor %}
+        </td>
+
+        <td>
+          <button class="w3-button w3-black" onclick="plusDivs(1)">&#10095;</button>
+        </td>
+
+      </tr>
+    </table>
+  </span>
+{% endfor %}
+
+<script>
+  var setIndex = 1;
+  var slideIndex = 1;
+
+  let slide_classes = ['CTSlides', 'CTstructSlides', 'RTdoseSlides'];
+
+  showSet(setIndex);
+  showDivs(slideIndex);
+
+  function plusDivs(n) {
+    showDivs(slideIndex += n);
+  }
+
+  function showDivs(n) {
+    var i;
+    for (const className of slide_classes){
+      var x = document.getElementsByClassName(className + setIndex.toString());
+      if (n > x.length) {slideIndex = 1}
+      if (n < 1) {slideIndex = x.length}
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      x[slideIndex-1].style.display = "block";
+    }
+  }
+
+  function currentSet(n) {
+    showSet(setIndex = n);
+  }
+
+  function showSet(n) {
+    var i;
+    var x = document.getElementsByClassName("imageSet");
+    var dots = document.getElementsByClassName("demo");
+    if (n > x.length) {setIndex = 1}
+    if (n < 1) {setIndex = x.length}
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" w3-black", "");
+    }
+    x[setIndex-1].style.display = "block";
+    dots[setIndex-1].className += " w3-black";
+    showDivs(1);
+  }
+</script>
+
+<br><br>
+
+<form action="http://127.0.0.1:5000/dashboard" method="get">
+    <button class="w3-button w3-black" type="submit" style="cursor:pointer;margin:auto;display:block">
       Back to Dashboard
     </button>
 </form>
