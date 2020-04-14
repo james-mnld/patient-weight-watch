@@ -29,7 +29,7 @@ Upon clicking the RT and symptoms botton on the last column (color-coded accordi
 	<li> Plot of all recorded weights </li>
 	<li> Information for all treatment days: </li>
 		<ul>
-			<li> T images </li>
+			<li> CT images </li>
 			<li> CT images with contours </li>
 			<li> CT images with RT dose </li>
 		</ul>
