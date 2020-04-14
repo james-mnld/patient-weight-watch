@@ -37,6 +37,8 @@ Upon clicking the RT and symptoms botton on the last column (color-coded accordi
 			
 TODO:
 <ul>
+	<li> Error handlers that check the validity of the webform values submitted </li>
+	<li> Handlers for web errors </li>
 	<li> Add warning indicator when one of the symptom levels is greater than a certain threshold </li>
 	<li> Make tables and figures scalable with window size or fixed and scrollable </li>
 </ul>
