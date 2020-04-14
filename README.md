@@ -18,17 +18,25 @@ The following information can be found on the main dashboard:
 </ul>
 
 Upon clicking the RT and symptoms botton on the last column (color-coded according to change in weight) of a specific patient, the following additional information are shown:
-	- Symptom levels:
-			- Nausea
-			- Skin Irritation
-			- Difficulty Swallowing
-			- Difficulty Breathing
-	- Plot of all recorded weights
-	- Information for all treatment days:
-			- CT images
-			- CT images with contours
-			- CT images with RT dose
+<ul>
+	<li> Symptom levels: </li>
+		<ul>
+			<li> Nausea </li>
+			<li> Skin Irritation </li>
+			<li> Difficulty Swallowing </li>
+			<li> Difficulty Breathing </li>
+		</ul>
+	<li> Plot of all recorded weights </li>
+	<li> Information for all treatment days: </li>
+		<ul>
+			<li> T images </li>
+			<li> CT images with contours </li>
+			<li> CT images with RT dose </li>
+		</ul>
+</ul>
 			
 TODO:
-	- Add warning indicator when one of the symptom levels is greater than a certain threshold
-	- Make tables and figures scalable with window size or fixed and scrollable
+<ul>
+	<li> Add warning indicator when one of the symptom levels is greater than a certain threshold </li>
+	<li> Make tables and figures scalable with window size or fixed and scrollable </li>
+</ul>
