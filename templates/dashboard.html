@@ -6,6 +6,10 @@
 
 <body>
   <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery.min.js"></script>
+  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" /> -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
   <style>
     table,
     th,
@@ -23,20 +27,47 @@
     th {
       background-color: powderblue;
     }
+    hr {
+      display: block;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      margin-left: auto;
+      margin-right: auto;
+      border-width: 2px;
+    }
+    .Blink {
+      animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+    }
+    .Blink2 {
+      animation: blinker2 10s infinite;
+      animation-duration: 10s;
+    }
+    @keyframes blinker {
+      from { opacity: 1; }
+      to { opacity: 0.1; }
+    }
+    @keyframes blinker2 {
+      from { opacity: 1; }
+      to { opacity: 0.25; }
+    }
   </style>
   <br>
-
-  <h1 align="center">
+  <hr>
+  <h1 align="center" class="w3-animate-opacity">
     <b>
       Weight-Watcher Dashboard
     </b>
   </h1>
+  <hr>
+  &nbsp;&nbsp;Last update:
+  <span id="lastUpdate" class="w3-animate-opacity Blink2" style="font-weight:bold;">
+    {{ lastUpdate }}
+  </span>&nbsp;<i class="fa fa-circle text-danger Blink" style="color:green;"></i>
 
-  &nbsp;&nbsp;Last update: <span id="lastUpdate" class="w3-animate-fading" style="font-weight: bold;">{{ lastUpdate }}</span>
   <br>
 
   <p>
-    &nbsp;&nbsp;Click the <strong>table headers</strong> to sort the table accordingly (Click again to reverse the order) <br>
+    &nbsp;&nbsp;Click the <strong>table headers</strong> to sort the table accordingly (click again to reverse the order) <br>
   </p>
   <p>
     &nbsp;&nbsp;Sorted by: <span id="sortStatus" style="font-weight: bold;">{{ sortStatus }}</span>
@@ -67,11 +98,11 @@
         {% endfor %}
         <td>
           {% if row['change_weight'] < threshold[0] %}
-          {% set color = 'red' %}
+            {% set color = 'red' %}
           {% elif row['change_weight'] < threshold[1] %}
-          {% set color = 'yellow' %}
+            {% set color = 'yellow' %}
           {% else %}
-          {% set color = 'green' %}
+            {% set color = 'green' %}
           {% endif %}
           <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
             <button class="w3-btn w3-{{ color }}" type="submit" name="p_id" value="{{ row['patientid'] }}" style="cursor:pointer">...</button>
@@ -87,11 +118,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script>
-    let column_names = {
-      {
-        colNames | tojson
-      }
-    };
+    let column_names = {{ colNames|tojson }};
 
     // function to update page info
     $(document).ready(function() {
@@ -104,29 +131,21 @@
       for (var item in jsonData) {
         var row = jsonData[item];
         var color;
-        if (row['change_weight'] < {
-            {
-              threshold[0]
-            }
-          }) {
+        if (row['change_weight'] < {{ threshold[0] }}) {
           color = 'red'
-        } else if (row['change_weight'] < {
-            {
-              threshold[1]
-            }
-          }) {
+        } else if (row['change_weight'] < {{ threshold[1] }}) {
           color = 'yellow'
         } else {
           color = 'green'
         }
-
         tableHTML += "<tr>";
         for (const name_pair of column_names) {
           tableHTML += "<td>" + row[name_pair[1]] + "</td>"
         }
         tableHTML += `<td>
         <form action="http://127.0.0.1:5000/RT_symptoms" method="post">
-            <button type="submit" class="w3-btn w3-` + color + `" name="p_id" value=` + row['patientid'] +
+            <button type="submit" class="w3-btn w3-` + color +
+            `" name="p_id" value=` + row['patientid'] +
           ` style="cursor:pointer;">...</button>
         </form>
         </td>`;

@@ -24,13 +24,31 @@
     background-color: powderblue;
   }
 
-  div.container {
-    display: inline-block;
-    width: 50%;
+  div.container1 {
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-left: 25px;
+    margin-top: 50px;
+  }
+
+  div.container2 {
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-right: 25px;
   }
 
   p {
     text-align: center;
+  }
+
+  hr {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
   }
 </style>
 
@@ -45,8 +63,7 @@
   </form>
 
   <br>
-
-  <div class="container" style="width:60%;float:left;padding:20px;">
+  <div class="container1 w3-animate-opacity" style="width:60%;float:left;padding:20px;">
     <h3 align="center">
       <strong>
         Patient Information:
@@ -74,7 +91,7 @@
 
     <h3 align="center">
       <strong>
-        Last Recorded Symptom Level [0-10]:
+        Last Recorded Symptom Levels [0-10]:
       </strong>
     </h3>
     <table id="patientSympTab" align="center">
@@ -96,7 +113,7 @@
     </table>
   </div>
 
-  <div class="container" style="width:40%;float:left;padding:10px;">
+  <div class="container2 w3-animate-opacity" style="width:35%;float:right;padding:10px;">
     <h3 align="center">
       <strong>
         Recorded Weights:
@@ -107,23 +124,27 @@
     </p>
   </div>
 
-  <br><br>
-
-  <h3 align="center">
-    <strong>
-      Dicom Information:
-    </strong>
-  </h3>
-
   <div class="w3-container" align="center">
+    <br><br>
+    <hr>
+    <p>
+      <h3 align="center">
+        <strong>
+          Information per Treatment Day:
+        </strong>
+      </h3>
+    </p>
     {% for pair in t_keys %}
     <button class="w3-button demo" onclick="currentSet({{ pair[0] }})">{{ pair[0] }}</button>
     {% endfor %}
   </div>
+  <p>
+    Slice <b id="pageNum"></b> / <b id="pageNumTot"></b>
+  </p>
 
   {% for pair in t_keys %}
-  <span class="imageSet">
-    <table align="center" width="100%">
+  <span class="imageSet w3-animate-opacity">
+    <table align="center" width="98%">
       <tr>
         <th></th>
         <th>CT</th>
@@ -163,6 +184,7 @@
   </span>
   {% endfor %}
 
+
   <script>
     var setIndex = 1;
     var slideIndex = 1;
@@ -178,8 +200,9 @@
 
     function showDivs(n) {
       var i;
+      var x;
       for (const className of slide_classes) {
-        var x = document.getElementsByClassName(className + setIndex.toString());
+        x = document.getElementsByClassName(className + setIndex.toString());
         if (n > x.length) {
           slideIndex = 1
         }
@@ -191,6 +214,8 @@
         }
         x[slideIndex - 1].style.display = "block";
       }
+      document.getElementById("pageNum").innerHTML = slideIndex;
+      document.getElementById("pageNumTot").innerHTML = x.length;
     }
 
     function currentSet(n) {
@@ -201,21 +226,19 @@
       var i;
       var x = document.getElementsByClassName("imageSet");
       var dots = document.getElementsByClassName("demo");
-      if (n > x.length) {
-        setIndex = 1
-      }
-      if (n < 1) {
-        setIndex = x.length
-      }
+      // hide all imageSet class
       for (i = 0; i < x.length; i++) {
         x[i].style.display = "none";
       }
+      // clear color for all buttons
       for (i = 0; i < dots.length; i++) {
         dots[i].className = dots[i].className.replace(" w3-black", "");
       }
+
       x[setIndex - 1].style.display = "block";
       dots[setIndex - 1].className += " w3-black";
-      showDivs(1);
+      slideIndex = 1;
+      showDivs(slideIndex);
     }
   </script>
 
