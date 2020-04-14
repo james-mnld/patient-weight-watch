@@ -115,7 +115,7 @@ con.commit()
 
 
 # populate PATIENT_IMAGES database
-path_img_root = '/static/patient_images/'
+path_img_root = 'static/patient_images/'
 N_patients = 9
 paths_list = []
 # grab all image paths and store it in paths_list

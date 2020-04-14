@@ -4,53 +4,63 @@
   <title>Dashboard - Weight_Watcher</title>
 </head>
 
+<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<style>
+  body{
+    overflow-x: scroll;
+  }
+  th,
+  td {
+    border: 1px solid black;
+    text-align: center;
+  }
+
+  table {
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    /* border-collapse: collapse; */
+  }
+
+  th,
+  td {
+    padding: 5px;
+    /* text-align: center; */
+  }
+
+  th {
+    background-color: powderblue;
+  }
+  hr {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-width: 3px;
+  }
+  .Blink {
+    animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+  }
+  .Blink2 {
+    animation: blinker2 10s infinite;
+    animation-duration: 10s;
+  }
+  @keyframes blinker {
+    from { opacity: 1; }
+    to { opacity: 0.1; }
+  }
+  @keyframes blinker2 {
+    from { opacity: 1; }
+    to { opacity: 0.25; }
+  }
+</style>
+
 <body>
-  <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
-  <script src="https://code.jquery.com/jquery.min.js"></script>
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" /> -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-  <style>
-    table,
-    th,
-    td {
-      border: 1px solid black;
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      padding: 5px;
-      text-align: center;
-    }
-
-    th {
-      background-color: powderblue;
-    }
-    hr {
-      display: block;
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
-      margin-left: auto;
-      margin-right: auto;
-      border-width: 2px;
-    }
-    .Blink {
-      animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
-    }
-    .Blink2 {
-      animation: blinker2 10s infinite;
-      animation-duration: 10s;
-    }
-    @keyframes blinker {
-      from { opacity: 1; }
-      to { opacity: 0.1; }
-    }
-    @keyframes blinker2 {
-      from { opacity: 1; }
-      to { opacity: 0.25; }
-    }
-  </style>
   <br>
   <hr>
   <h1 align="center" class="w3-animate-opacity">
@@ -74,8 +84,7 @@
   </p>
   <br>
 
-  <table style="width:100%" id="patientTable" class="w3-table-all">
-
+  <table style="width:100%" id="patientTable">
     <thead>
       <tr>
         {% for col in colNames %}

@@ -79,6 +79,7 @@ app.json_encoder = CustomJSONEncoder
 app.config["DEBUG"] = True
 
 
+# Function that handles requests to the home page (dashboard)
 @app.route("/")
 @app.route("/home")
 @app.route("/index")
@@ -211,8 +212,9 @@ def create_figure(rec_weights):
     ax = fig.add_subplot(1, 1, 1)
     x_vals = [x+1 for x in range(len(rec_weights))]
     ax.plot(x_vals, rec_weights)
-    ax.set_xlabel('Day Number')
-    ax.set_ylabel('Weights [kg]')
+    ax.scatter(x_vals, rec_weights)
+    ax.set_xlabel('Day Number', fontsize=18)
+    ax.set_ylabel('Weights [kg]', fontsize=18)
     ax.set_xticks(x_vals)
     ax.grid()
     fig.tight_layout()

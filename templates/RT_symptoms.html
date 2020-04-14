@@ -7,34 +7,30 @@
 <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
 
 <style>
+  body{
+    overflow-x: scroll;
+  }
   table,
   th,
   td {
-    border: 1px solid black;
-    border-collapse: collapse;
+    border: 0px solid black;
+    padding: 10px;
+    text-align: center;
   }
 
-  th,
-  td {
-    padding: 5px;
-    text-align: center;
+  td.td2, th.th2 {
+    border: 1px solid black;
+    border-collapse: collapse;
   }
 
   th {
     background-color: powderblue;
   }
 
-  div.container1 {
+  table.finetable {
     border: 2px solid black;
-    border-radius: 5px;
-    margin-left: 25px;
-    margin-top: 50px;
-  }
-
-  div.container2 {
-    border: 2px solid black;
-    border-radius: 5px;
-    margin-right: 25px;
+    border-radius: 10px;
+    padding: 10px;
   }
 
   p {
@@ -55,74 +51,80 @@
 <body>
 
   <br>
-
   <form action="http://127.0.0.1:5000/dashboard" method="get">
     <button class="w3-button w3-black" type="submit" style="cursor:pointer;margin:auto;display:block">
       Back to Dashboard
     </button>
   </form>
-
   <br>
-  <div class="container1 w3-animate-opacity" style="width:60%;float:left;padding:20px;">
-    <h3 align="center">
-      <strong>
-        Patient Information:
-      </strong>
-    </h3>
-    <table id="patientInfoTab" align="center">
-      <thead>
-        <tr>
-          {% for col in colNames %}
-          <th>{{ col[0] }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
 
-      <tbody>
-        <tr>
-          {% for col in colNames %}
-          <td> {{ row_info[col[1]] }} </td>
-          {% endfor %}
-        </tr>
-      </tbody>
+  <span>
+    <table class="finetable">
+      <tr>
+        <td>
+          <div class="w3-animate-opacity">
+            <h3 align="center">
+              <strong>
+                Patient Information:
+              </strong>
+            </h3>
+            <table id="patientInfoTab" align="center" width="40%">
+                <thead>
+                  <tr>
+                    {% for col in colNames %}
+                    <th class="th2">{{ col[0] }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    {% for col in colNames %}
+                    <td class="td2"> {{ row_info[col[1]] }} </td>
+                    {% endfor %}
+                  </tr>
+                </tbody>
+              </table>
+            <br><br>
+            <h3 align="center">
+              <strong>
+                Last Recorded Symptom Levels [0-10]:
+              </strong>
+            </h3>
+            <table id="patientSympTab" align="center" width="40%">
+              <thead>
+                <tr>
+                  {% for col in colNamesSymp %}
+                  <th class="th2">{{ col[0] }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  {% for col in colNamesSymp %}
+                  <td class="td2"> {{ row_symp[col[1]] }} </td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </td>
+        <td width="50%">
+          <div class="w3-animate-opacity">
+            <h3 align="center">
+              <strong>
+                Recorded Weights:
+              </strong>
+            </h3>
+            <p>
+              <img src="/weights_plot.png" width="75%">
+            </p>
+          </div>
+        </td>
+      </tr>
     </table>
-
-    <br><br>
-
-    <h3 align="center">
-      <strong>
-        Last Recorded Symptom Levels [0-10]:
-      </strong>
-    </h3>
-    <table id="patientSympTab" align="center">
-      <thead>
-        <tr>
-          {% for col in colNamesSymp %}
-          <th>{{ col[0] }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr>
-          {% for col in colNamesSymp %}
-          <td> {{ row_symp[col[1]] }} </td>
-          {% endfor %}
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="container2 w3-animate-opacity" style="width:35%;float:right;padding:10px;">
-    <h3 align="center">
-      <strong>
-        Recorded Weights:
-      </strong>
-    </h3>
-    <p>
-      <img src="/weights_plot.png" width="75%">
-    </p>
-  </div>
+  </span>
 
   <div class="w3-container" align="center">
     <br><br>
@@ -139,12 +141,12 @@
     {% endfor %}
   </div>
   <p>
-    Slice <b id="pageNum"></b> / <b id="pageNumTot"></b>
+    Slice: <b id="pageNum"></b> / <b id="pageNumTot"></b>
   </p>
 
   {% for pair in t_keys %}
   <span class="imageSet w3-animate-opacity">
-    <table align="center" width="98%">
+    <table class="finetable" align="center" width="100%">
       <tr>
         <th></th>
         <th>CT</th>
@@ -178,69 +180,10 @@
         <td>
           <button class="w3-button w3-black" onclick="plusDivs(1)">&#10095;</button>
         </td>
-
       </tr>
     </table>
   </span>
   {% endfor %}
-
-
-  <script>
-    var setIndex = 1;
-    var slideIndex = 1;
-
-    let slide_classes = ['CTSlides', 'CTstructSlides', 'RTdoseSlides'];
-
-    showSet(setIndex);
-    showDivs(slideIndex);
-
-    function plusDivs(n) {
-      showDivs(slideIndex += n);
-    }
-
-    function showDivs(n) {
-      var i;
-      var x;
-      for (const className of slide_classes) {
-        x = document.getElementsByClassName(className + setIndex.toString());
-        if (n > x.length) {
-          slideIndex = 1
-        }
-        if (n < 1) {
-          slideIndex = x.length
-        }
-        for (i = 0; i < x.length; i++) {
-          x[i].style.display = "none";
-        }
-        x[slideIndex - 1].style.display = "block";
-      }
-      document.getElementById("pageNum").innerHTML = slideIndex;
-      document.getElementById("pageNumTot").innerHTML = x.length;
-    }
-
-    function currentSet(n) {
-      showSet(setIndex = n);
-    }
-
-    function showSet(n) {
-      var i;
-      var x = document.getElementsByClassName("imageSet");
-      var dots = document.getElementsByClassName("demo");
-      // hide all imageSet class
-      for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-      }
-      // clear color for all buttons
-      for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" w3-black", "");
-      }
-
-      x[setIndex - 1].style.display = "block";
-      dots[setIndex - 1].className += " w3-black";
-      slideIndex = 1;
-      showDivs(slideIndex);
-    }
-  </script>
 
   <br><br>
 
@@ -251,5 +194,62 @@
   </form>
 
 </body>
+
+<script>
+  var setIndex = 1;
+  var slideIndex = 1;
+
+  let slide_classes = ['CTSlides', 'CTstructSlides', 'RTdoseSlides'];
+
+  showSet(setIndex);
+  showDivs(slideIndex);
+
+  function plusDivs(n) {
+    showDivs(slideIndex += n);
+  }
+
+  function showDivs(n) {
+    var i;
+    var x;
+    for (const className of slide_classes) {
+      x = document.getElementsByClassName(className + setIndex.toString());
+      if (n > x.length) {
+        slideIndex = 1
+      }
+      if (n < 1) {
+        slideIndex = x.length
+      }
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      x[slideIndex - 1].style.display = "block";
+    }
+    document.getElementById("pageNum").innerHTML = slideIndex;
+    document.getElementById("pageNumTot").innerHTML = x.length;
+  }
+
+  function currentSet(n) {
+    showSet(setIndex = n);
+  }
+
+  function showSet(n) {
+    var i;
+    var x = document.getElementsByClassName("imageSet");
+    var dots = document.getElementsByClassName("demo");
+    // hide all imageSet class
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    // clear color for all buttons
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" w3-black", "");
+    }
+
+    x[setIndex - 1].style.display = "block";
+    dots[setIndex - 1].className += " w3-black";
+    slideIndex = 1;
+    showDivs(slideIndex);
+  }
+</script>
 
 </html>
