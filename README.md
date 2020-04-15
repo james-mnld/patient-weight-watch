@@ -35,11 +35,12 @@ Upon clicking the RT and symptoms botton on the last column (color-coded accordi
 		</ul>
 </ul>
 			
-TODO:
+Future work:
 <ul>
 	<li> Error handlers that check the validity of the webform values submitted </li>
-	<li> Handlers for web errors </li>
+	<li> Handlers for other web errors </li>
 	<li> Add warning indicator when one of the symptom levels is greater than a certain threshold </li>
-	<li> Make tables and figures scalable with window size or fixed and scrollable </li>
+	<li> Make tables and figures scalable with window size or fixed in size yet scrollable </li>
 	<li> Option for user to modify weight thresholds for color coding </li>
+	<li> Option for user to change weight units </li>
 </ul>
