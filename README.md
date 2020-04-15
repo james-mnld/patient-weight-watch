@@ -41,4 +41,5 @@ TODO:
 	<li> Handlers for web errors </li>
 	<li> Add warning indicator when one of the symptom levels is greater than a certain threshold </li>
 	<li> Make tables and figures scalable with window size or fixed and scrollable </li>
+	<li> Option for user to modify weight thresholds for color coding </li>
 </ul>
